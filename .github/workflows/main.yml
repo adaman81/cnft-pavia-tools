@@ -29,22 +29,12 @@ jobs:
       with:
         name: binaries
         path: sales-lookup/bin/**/publish/*
-    - name: release
-      uses: actions/create-release@v1
-      id: create_release
-      with:
-        draft: false
-        prerelease: false
-        release_name: ${{ steps.version.outputs.version }}
-        tag_name: ${{ github.ref }}
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-    - name: upload windows artifact
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ github.token }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: sales-lookup/bin/**/publish/*
-        asset_name: binaries.zip
-        asset_content_type: application/zip
+    - name: Create Release
+      uses: ncipollo/release-action@v1.8.10
+      with:        
+        # An optional flag which indicates if artifact read or upload errors should fail the build.
+        artifactErrorsFailBuild: true # optional, default is 
+        # An optional set of paths representing artifacts to upload to the release. This may be a single path or a comma delimited list of paths (or globs)
+        artifacts: "*.zip"
+
+
