@@ -26,7 +26,5 @@ jobs:
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
-        name: dist-without-markdown
-        path: |
-          dist
-          !dist/**/*.md
+        name: binaries
+        path: bin/**/*.dll          
