@@ -9,4 +9,4 @@ Get price info on pavia.io lands!
 - Red prices: sold for that amount recently (cnftanalytics.io)
 - Installation: this was hacked together in Visual Studio .Net, so you need that to build it
 
-<img src="https://github.com/adaman81/cnft-pavia-tools/blob/master/pavia.PNG" width="75%"/>
+<img src="https://github.com/adaman81/cnft-pavia-tools/blob/master/pavia.PNG"/>
