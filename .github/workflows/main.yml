@@ -1,0 +1,46 @@
+name: .NET Release (master tagged with version tag, for example v0.1.2)
+
+on:
+  push:
+    tags:
+      - '*'
+      
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 5.0.x
+    - name: Restore dependencies
+      run: dotnet restore
+    - name: Build
+      run: dotnet build --no-restore
+    - name: Publish
+      run: dotnet publish --runtime win-x64 --configuration Release -p:PublishSingleFile=true -p:PublishTrimmed=true --self-contained true
+    - name: Test
+      run: dotnet test --no-build --verbosity normal
+    - name: Upload a Build Artifact
+      uses: actions/upload-artifact@v2.2.4
+      with:
+        name: binaries
+        path: sales-lookup/bin/**/publish/*
+    - name: release
+      uses: actions/create-release@v1
+      id: create_release
+      with:
+        draft: false
+        prerelease: false
+        release_name: ${{ steps.version.outputs.version }}
+        tag_name: ${{ github.ref }}
+    - name: upload windows artifact
+      uses: actions/upload-release-asset@v1      
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: sales-lookup/bin/**/publish/*
+        asset_name: binaries.zip
+        asset_content_type: application/zip
