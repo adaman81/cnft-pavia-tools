@@ -17,9 +17,9 @@ namespace sales_lookup
     {
         static void Main(string[] args)
         {
-            int centerX = AskForInt("X");
-            int centerY = AskForInt("Y");
-            int radius = AskForInt("radius");
+            int centerX = AskForInt("X", -115, 108);
+            int centerY = AskForInt("Y", -138, 84);
+            int radius = AskForInt("radius", 2, 8);
 
             Console.WriteLine("Getting prices");
             Console.WriteLine();
@@ -44,16 +44,19 @@ namespace sales_lookup
             Console.ReadLine();
         }
 
-        private static int AskForInt(string v)
+        private static int AskForInt(string v, int min, int max)
         {
             int value = 0;
             while(true)
             {
-                Console.Write($"Enter {v}: ");
+                Console.Write($"Enter {v} [{min}->{max}]: ");
                 if (int.TryParse(Console.ReadLine(), out int result))
                 {
-                    value = result;
-                    break;
+                    if (result >= min && result <= max)
+                    {
+                        value = result;
+                        break;
+                    }
                 }
             }
 
@@ -198,7 +201,30 @@ namespace sales_lookup
             client.Timeout = -1;
             var request = new RestRequest(Method.POST);
             request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
-            request.AddParameter("search", $"paviaplus{land.X}plus{land.Y}");
+
+            var sb = new StringBuilder();
+            sb.Append("pavia");
+            if (land.X >= 0)
+            {
+                sb.Append("plus");
+            }
+            else
+            {
+                sb.Append("minus");
+            }
+            sb.Append(Math.Abs(land.X));
+
+            if (land.Y >= 0)
+            {
+                sb.Append("plus");
+            }
+            else
+            {
+                sb.Append("minus");
+            }
+            sb.Append(Math.Abs(land.Y));
+
+            request.AddParameter("search", sb.ToString());
             request.AddParameter("sort", "date");
             request.AddParameter("order", "desc");
             request.AddParameter("page", "1");
