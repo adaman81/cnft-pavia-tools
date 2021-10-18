@@ -27,4 +27,4 @@ jobs:
       uses: actions/upload-artifact@v2.2.4
       with:
         name: binaries
-        path: bin/**/*.dll          
+        path: sales-lookup/bin/**/*.dll          
