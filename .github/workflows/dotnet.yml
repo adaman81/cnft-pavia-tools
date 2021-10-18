@@ -21,10 +21,12 @@ jobs:
       run: dotnet restore
     - name: Build
       run: dotnet build --no-restore
+    - name: Publish
+      run: dotnet publish --runtime win-x64 --configuration Release -p:PublishSingleFile=true -p:PublishTrimmed=true --self-contained true
     - name: Test
       run: dotnet test --no-build --verbosity normal      
     - name: Upload a Build Artifact
       uses: actions/upload-artifact@v2.2.4
       with:
         name: binaries
-        path: sales-lookup/bin/**/*.dll          
+        path: sales-lookup/bin/**/publish/*
