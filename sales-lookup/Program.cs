@@ -106,7 +106,7 @@ namespace sales_lookup
                         var sb = new StringBuilder();
                         if (world.Lands[x, y]?.ForSale ?? false)
                         {
-                            sb.AppendLine($"[green]{world.Lands[x, y].SalesPrice}[/]");
+                            sb.AppendLine($"[green]{world.Lands[x, y].SalesPrice} - {world.Lands[x, y].SaleListedTimestamp}[/]");
                         }
 
                         if (world.Lands[x, y]?.RecentlySold ?? false)
@@ -247,6 +247,12 @@ namespace sales_lookup
             {
                 land.ForSale = !result.Assets[0].Sold;
                 land.SalesPrice = result.Assets[0].Price / 1000000;
+                land.SaleListedTimestamp = FromUnixTime(result.Assets[0].DateListed).ToString("dd/MM HH:mm");
+            }
+
+            DateTime FromUnixTime(long unixTime)
+            {
+                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(unixTime);
             }
         }
     }

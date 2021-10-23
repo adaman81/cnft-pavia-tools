@@ -14,6 +14,8 @@ namespace sales_lookup.Models
 
         public decimal SalesPrice { get; set; }
 
+        public string SaleListedTimestamp { get; set; }
+
         public bool RecentlySold => RecentlySoldPrices.Count > 0;
 
         public List<SoldForPrice> RecentlySoldPrices { get; set; }
