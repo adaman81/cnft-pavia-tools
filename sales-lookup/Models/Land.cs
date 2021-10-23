@@ -16,12 +16,13 @@ namespace sales_lookup.Models
 
         public bool RecentlySold => RecentlySoldPrices.Count > 0;
 
-        public List<decimal> RecentlySoldPrices { get; set; }
+        public List<SoldForPrice> RecentlySoldPrices { get; set; }
+
         public bool IsPlaza { get; internal set; }
 
         public Land()
         {
-            RecentlySoldPrices = new List<decimal>();
+            RecentlySoldPrices = new List<SoldForPrice>();
         }
 
         public override string ToString()
@@ -42,6 +43,18 @@ namespace sales_lookup.Models
             }
 
             return sb.ToString();
+        }
+    }
+
+    public class SoldForPrice
+    {
+        public decimal Price { get; set; }
+
+        public string Timestamp { get; set; }
+
+        public override string ToString()
+        {
+            return $"{Price} - {Timestamp}";
         }
     }
 }

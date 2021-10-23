@@ -19,7 +19,7 @@ namespace sales_lookup
         {
             int centerX = AskForInt("X", -115, 108);
             int centerY = AskForInt("Y", -138, 84);
-            int radius = AskForInt("radius", 2, 8);
+            int radius = AskForInt("radius", 2, 40);
 
             Console.WriteLine("Getting prices");
             Console.WriteLine();
@@ -70,7 +70,10 @@ namespace sales_lookup
             {
                 for (int x = startX; x < world.GetLength(0) && x < stopX; x++)
                 {
-                    lands.Add(world[x, y]);
+                    if (!world[x, y].IsPlaza)
+                    {
+                        lands.Add(world[x, y]);
+                    }
                 }
             }
 
@@ -179,14 +182,21 @@ namespace sales_lookup
                 // foreach tr
                 var trNodes = doc.DocumentElement.SelectNodes("tr");
 
-                var soldPricesList = new List<decimal>();
+                var soldPricesList = new List<SoldForPrice>();
                 foreach (XmlNode trNode in trNodes)
                 {
                     var tdNodes = trNode.SelectNodes("td");
+                    var soldDate = tdNodes[1].InnerText;
                     var price = tdNodes[2].InnerText;
                     if (decimal.TryParse(price, out decimal parsedPrice))
                     {
-                        soldPricesList.Add(parsedPrice);
+                        SoldForPrice sfp = new SoldForPrice
+                        {
+                            Price = parsedPrice,
+                            Timestamp = soldDate
+                        };
+
+                        soldPricesList.Add(sfp);
                     }
                 }
 
