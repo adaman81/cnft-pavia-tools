@@ -78,12 +78,13 @@ namespace sales_lookup
                 }
             }
 
-            //Parallel.ForEach(lands, land => GetLandInfo(land));
+            Parallel.ForEach(lands, land => GetLandInfo(land));
 
-            foreach(var land in lands)
-            {
-                GetLandInfo(land);
-            }
+            // For debugging
+            //foreach(var land in lands)
+            //{
+            //    GetLandInfo(land);
+            //}
         }
 
         private static void PrintWorld(World world, int startX, int stopX, int startY, int stopY)
