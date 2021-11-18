@@ -17,41 +17,84 @@ namespace sales_lookup.Models.CNFT.io
 
     public partial class MarketplaceSearchResult
     {
-        [JsonProperty("found")]
-        public long Found { get; set; }
+        [JsonProperty("results")]
+        public Result[] Results { get; set; }
 
-        [JsonProperty("assets")]
-        public Asset[] Assets { get; set; }
+        [JsonProperty("page")]
+        public long Page { get; set; }
     }
 
-    public partial class Asset
+    public partial class Result
     {
-        [JsonProperty("id")]
+        [JsonProperty("_id")]
         public string Id { get; set; }
 
-        [JsonProperty("unit")]
-        public string Unit { get; set; }
+        [JsonProperty("asset")]
+        public Asset Asset { get; set; }
+
+        [JsonProperty("sellerId")]
+        public string SellerId { get; set; }
+
+        [JsonProperty("searchTerm")]
+        public string SearchTerm { get; set; }
+
+        [JsonProperty("type")]
+        public string Type { get; set; }
 
         [JsonProperty("price")]
         public long Price { get; set; }
 
-        [JsonProperty("policy")]
-        public string Policy { get; set; }
+        [JsonProperty("offers")]
+        public object[] Offers { get; set; }
+
+        [JsonProperty("featured")]
+        public bool Featured { get; set; }
+
+        [JsonProperty("views")]
+        public string[] Views { get; set; }
+
+        [JsonProperty("viewCount")]
+        public long ViewCount { get; set; }
+
+        [JsonProperty("favouriteCount")]
+        public long FavouriteCount { get; set; }
+
+        [JsonProperty("createdAt")]
+        public DateTimeOffset CreatedAt { get; set; }
+
+        [JsonProperty("updatedAt")]
+        public DateTimeOffset UpdatedAt { get; set; }
+
+        [JsonProperty("__v")]
+        public long V { get; set; }
+    }
+
+    public partial class Asset
+    {
+        [JsonProperty("assetId")]
+        public string AssetId { get; set; }
+
+        [JsonProperty("policyId")]
+        public string PolicyId { get; set; }
 
         [JsonProperty("metadata")]
         public Metadata Metadata { get; set; }
 
-        [JsonProperty("verified")]
-        public Verified Verified { get; set; }
+        [JsonProperty("unit")]
+        public string Unit { get; set; }
 
-        [JsonProperty("paymentSession")]
-        public object PaymentSession { get; set; }
+        [JsonProperty("quantity")]
+        [JsonConverter(typeof(ParseStringConverter))]
+        public long Quantity { get; set; }
 
-        [JsonProperty("sold")]
-        public bool Sold { get; set; }
+        [JsonProperty("nsfw")]
+        public bool Nsfw { get; set; }
 
-        [JsonProperty("dateListed")]
-        public long DateListed { get; set; }
+        [JsonProperty("mintdate")]
+        public DateTimeOffset Mintdate { get; set; }
+
+        [JsonProperty("project")]
+        public string Project { get; set; }
     }
 
     public partial class Metadata
@@ -59,28 +102,16 @@ namespace sales_lookup.Models.CNFT.io
         [JsonProperty("name")]
         public string Name { get; set; }
 
-        [JsonProperty("thumbnail")]
-        public string[] Thumbnail { get; set; }
+        [JsonProperty("image")]
+        public string Image { get; set; }
 
-        [JsonProperty("mediaType")]
-        public object MediaType { get; set; }
-
-        [JsonProperty("files")]
-        public object[] Files { get; set; }
-
-        [JsonProperty("tags")]
-        public Tag[] Tags { get; set; }
-    }
-
-    public partial class Tag
-    {
-        [JsonProperty("-----Info-----", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("-----Info-----")]
         public string[] Info { get; set; }
 
-        [JsonProperty("-----Land Sale 1-----", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("-----Land Sale 1-----")]
         public LandSale1[] LandSale1 { get; set; }
 
-        [JsonProperty("-----Product Information-----", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonProperty("-----Product Information-----")]
         public ProductInformation[] ProductInformation { get; set; }
     }
 
@@ -105,25 +136,6 @@ namespace sales_lookup.Models.CNFT.io
 
         [JsonProperty("Copyright", NullValueHandling = NullValueHandling.Ignore)]
         public string Copyright { get; set; }
-    }
-
-    public partial class Verified
-    {
-        [JsonProperty("verified")]
-        public bool VerifiedVerified { get; set; }
-
-        [JsonProperty("project")]
-        public string Project { get; set; }
-    }
-
-    public partial class MarketplaceSearchResult
-    {
-        public static MarketplaceSearchResult FromJson(string json) => JsonConvert.DeserializeObject<MarketplaceSearchResult>(json, Converter.Settings);
-    }
-
-    public static class Serialize
-    {
-        public static string ToJson(this MarketplaceSearchResult self) => JsonConvert.SerializeObject(self, Converter.Settings);
     }
 
     internal static class Converter

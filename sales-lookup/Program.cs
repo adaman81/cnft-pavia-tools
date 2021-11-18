@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Xml;
 using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Serializers.NewtonsoftJson;
 using sales_lookup.Models;
 using sales_lookup.Models.CNFT.io;
 using Spectre.Console;
@@ -77,7 +78,12 @@ namespace sales_lookup
                 }
             }
 
-            Parallel.ForEach(lands, land => GetLandInfo(land));
+            //Parallel.ForEach(lands, land => GetLandInfo(land));
+
+            foreach(var land in lands)
+            {
+                GetLandInfo(land);
+            }
         }
 
         private static void PrintWorld(World world, int startX, int stopX, int startY, int stopY)
@@ -209,8 +215,9 @@ namespace sales_lookup
             // CNFT.io
             var client = new RestClient("https://api.cnft.io/market/listings");
             client.Timeout = -1;
+            client.UseNewtonsoftJson();
             var request = new RestRequest(Method.POST);
-            request.AddHeader("Content-Type", "application/x-www-form-urlencoded");
+            request.AddHeader("Content-Type", "application/json");
 
             var sb = new StringBuilder();
             sb.Append("pavia");
@@ -234,25 +241,37 @@ namespace sales_lookup
             }
             sb.Append(Math.Abs(land.Y));
 
-            request.AddParameter("search", sb.ToString());
-            request.AddParameter("sort", "date");
-            request.AddParameter("order", "desc");
-            request.AddParameter("page", "1");
-            request.AddParameter("verified", "true");
+            request.AddJsonBody(new MarketListingFilter
+            {
+                Search = sb.ToString(),
+                Verified = true,
+                Page = 1,
+                Nsfw = false,
+                Sold = false,
+                Sort = new Sort {  Id = -1 },
+                Types = new[] {"listing", "auction", "offer" }
+            });
+
             IRestResponse response = client.Execute(request);
 
             var result = JsonConvert.DeserializeObject<MarketplaceSearchResult>(response.Content);
 
-            if (result.Found == 1)
+            if (result.Results != null && result.Results.Count() == 1)
             {
-                land.ForSale = !result.Assets[0].Sold;
-                land.SalesPrice = result.Assets[0].Price / 1000000;
-                land.SaleListedTimestamp = FromUnixTime(result.Assets[0].DateListed).ToString("dd/MM HH:mm");
-            }
+                var resultFound = result.Results.FirstOrDefault();
 
-            DateTime FromUnixTime(long unixTime)
-            {
-                return new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc).AddMilliseconds(unixTime);
+                land.ForSale = true;
+                land.SalesPrice = resultFound.Price / 1000000;
+
+                if (resultFound.CreatedAt != null)
+                {
+                    land.SaleListedTimestamp = resultFound.CreatedAt.ToString("dd/MM HH:mm");
+                }
+
+                if (resultFound.UpdatedAt != null)
+                {
+                    land.SaleListedTimestamp = resultFound.UpdatedAt.ToString("dd/MM HH:mm");
+                }
             }
         }
     }
