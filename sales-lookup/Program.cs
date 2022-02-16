@@ -18,8 +18,8 @@ namespace sales_lookup
     {
         static void Main(string[] args)
         {
-            int centerX = AskForInt("X", -115, 108);
-            int centerY = AskForInt("Y", -138, 84);
+            int centerX = AskForInt("X", -259, 241);
+            int centerY = AskForInt("Y", -189, 138);
             int radius = AskForInt("radius", 2, 40);
 
             Console.WriteLine("Getting prices");
@@ -81,7 +81,7 @@ namespace sales_lookup
             Parallel.ForEach(lands, land => GetLandInfo(land));
 
             // For debugging
-            //foreach(var land in lands)
+            //foreach (var land in lands)
             //{
             //    GetLandInfo(land);
             //}
@@ -257,9 +257,14 @@ namespace sales_lookup
 
             var result = JsonConvert.DeserializeObject<MarketplaceSearchResult>(response.Content);
 
-            if (result.Results != null && result.Results.Count() == 1)
+            if (result.Results != null)
             {
-                var resultFound = result.Results.FirstOrDefault();
+                var resultFound = result.Results.Where(r => r.Asset != null && r.Asset.AssetId.ToLower() == sb.ToString()).FirstOrDefault();
+
+                if (resultFound == null)
+                {
+                    return;
+                }
 
                 land.ForSale = true;
                 land.SalesPrice = resultFound.Price / 1000000;

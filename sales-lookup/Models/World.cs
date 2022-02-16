@@ -6,12 +6,12 @@ namespace sales_lookup.Models
 {
     public class World
     {
-        public Land[,] Lands = new Land[223, 222];
+        public Land[,] Lands = new Land[500, 327];
 
         public World()
         {
-            int paviaX = -115;
-            int paviaY = 84;
+            int paviaX = -259; // left most x on map
+            int paviaY = 138; // upper y on map
 
             for (int y = 0; y < Lands.GetLength(1); y++)
             {
@@ -27,7 +27,7 @@ namespace sales_lookup.Models
                 }
 
                 paviaY--;
-                paviaX = -115;
+                paviaX = -259;
             }
 
             // setup plaza
@@ -46,20 +46,20 @@ namespace sales_lookup.Models
 
         public (int X, int Y) GetCoordinates(int paviaX, int paviaY)
         {
-            int x = paviaX + 115;
-            int y = 84 - paviaY;
+            int x = paviaX + 259;
+            int y = 138 - paviaY;
 
             return (x, y);
         }
 
         public int GetXCoordinate(int x)
         {
-            return x - 115;
+            return x - 259;
         }
 
         public int GetYCoordinate(int y)
         {
-            return 84 - y;
+            return 138 - y;
         }
     }
 }
